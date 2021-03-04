@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import random
 from sklearn.utils import shuffle
@@ -108,3 +109,40 @@ def split_user_profile(user_profiles, test_ratio):
         train[user_id] = rated_items[num_tests:]
 
     return train, test
+
+
+# Generate dense matrix
+# Get DataFrame as input convert it to user * item matrix
+def create_user_item_matrix(data):
+    items = data.item.unique()
+    users = data.user.unique()
+    rate_matrix = pd.DataFrame(0, index=users, columns=items)
+
+    for item in items:
+        selected_data = data[data.item == item]
+        for d in selected_data.iterrows():
+            selected_user = d[1][1]
+            rate = d[1][2]
+            rate_matrix.at[selected_user, item] = rate
+    rate_matrix.columns = np.arange(len(rate_matrix.columns))
+    return rate_matrix.reset_index(drop=True)
+
+
+# Fill category column of meta data to 'Unknown' if it's empty or NaN
+def fill_category(data):
+    for index, row in data.iterrows():
+        if row[0] == [] or not row[0]:
+            row[0] = 'Unknown'
+    return data
+
+
+# Append the element of the second list to the first list and return a new list
+def _append(first_list, second_list):
+    new_list = []
+    for e in first_list:
+        new_list.append(e)
+
+    for e in second_list:
+        new_list.append(e)
+
+    return new_list
