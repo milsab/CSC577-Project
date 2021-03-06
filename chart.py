@@ -16,7 +16,7 @@ def plot_bar(x, y, x_label='', y_label='', title='', x_lim=0, y_lim=0, x_size=15
     plt.bar(x, y, color=mcolors.BASE_COLORS);
 
 
-def plot_box(x, y, x_label='', y_label='', title='', x_size=12, y_size=7):
+def plot_box(x, y, x_label='', y_label='', title='', x_size=10, y_size=6):
     fig = plt.figure(figsize=(x_size, y_size))
     ax1 = fig.add_subplot(111)
     plt.boxplot(y, labels=x, vert=False, whis=50)
@@ -71,7 +71,7 @@ def plot_precision_recall(precision, recall, k=40):
 
 # Plot Group Bar Chart
 def plot_group_bar(_precision, _recall):
-    labels = ['KNN', 'Model-Based', 'Cluster']
+    labels = ['KNN User_Based', 'KNN Item-Based', 'Model-Based', 'Cluster']
     precisions = _precision
     recalls = _recall
 

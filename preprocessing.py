@@ -7,6 +7,7 @@ RANDOM_STATE = 44
 
 
 # Create a map between old ids to new numeric ids
+
 def get_id_map(data):
     unique_user_ids = data.user.unique()
     unique_item_ids = data.item.unique()
@@ -146,3 +147,6 @@ def _append(first_list, second_list):
         new_list.append(e)
 
     return new_list
+
+
+

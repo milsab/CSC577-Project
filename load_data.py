@@ -48,3 +48,6 @@ def load_ratings(path=PATH_RATING):
     data = pd.read_csv(path, names=['item', 'user', 'rate', 'timestamp'], header=None)
     data.drop(columns=['timestamp'], inplace=True)
     return data.reindex(columns=['user', 'item', 'rate'])
+
+
+

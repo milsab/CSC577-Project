@@ -7,9 +7,7 @@ from enum import Enum
 from collections import defaultdict
 from statistics import mean
 
-
 from surprise import KNNWithMeans, KNNWithZScore, KNNBaseline, SVD, SVDpp, NMF, SlopeOne, CoClustering, BaselineOnly
-
 
 from surprise.model_selection import GridSearchCV, KFold
 
@@ -76,10 +74,10 @@ def run_kfold(algo_type, data, algorithm, params, cv=5):
             algo = algorithm(k=params['k'], min_k=3, sim_options=params['sim_options'], verbose=False)
         elif algo_type == 'MODEL_BASED':
             algo = algorithm(n_factors=params['n_factors'],
-                            n_epochs=params['n_epochs'],
-                            reg_all=params['reg_all'],
-                            lr_all=params['lr_all']
-                            )
+                             n_epochs=params['n_epochs'],
+                             reg_all=params['reg_all'],
+                             lr_all=params['lr_all']
+                             )
         algo.fit(trainset)
         predictions = algo.test(testset)
         rmse.append(accuracy.rmse(predictions, verbose=False))
@@ -137,7 +135,6 @@ def get_top_n(predictions, N=10, user_id=None):
 
 # Return precision and recall at K metrics for each user
 def precision_recall_at_k(predictions, K=10, threshold=3.5):
-
     # First map the predictions to each user.
     user_est_true = defaultdict(list)
     for uid, _, actual_rate, predicted_rate, _ in predictions:
@@ -146,7 +143,6 @@ def precision_recall_at_k(predictions, K=10, threshold=3.5):
     precisions = []  # dict()
     recalls = []  # dict()
     for uid, user_ratings in user_est_true.items():
-
         # Sort user ratings by estimated value (predicted rate)
         user_ratings.sort(key=lambda x: x[0], reverse=True)
 
@@ -163,7 +159,6 @@ def precision_recall_at_k(predictions, K=10, threshold=3.5):
         # Precision@K: Proportion of recommended items that are relevant
         # When n_rec_k is 0, Precision is undefined. So, it will set to 0.
         precisions.append(n_rel_and_rec_k / n_rec_k if n_rec_k != 0 else 0)
-
 
         # Recall@K: Proportion of relevant items that are recommended
         # When n_rel is 0, Recall is undefined. So, it will set to 0.
@@ -209,17 +204,24 @@ def batch_evaluate(algo_type, algo_list, params, trainset, testset, verbose=True
     return rmses, predictions
 
 
-# return a list of Precision and Recall over diffrent value of K
+# return a list of Precision and Recall over different value of K
 def precision_recall_over_k(predictions, _threshold=3.5, _K=40):
     precision = []
     recalls = []
     for k in range(1, _K):
-        avg_precision, avg_recall = precision_recall_at_k(predictions, K=k, threshold=_threshold)
+        avg_precision, avg_recall, fmeasure = precision_recall_at_k(predictions, K=k, threshold=_threshold)
         precision.append(avg_precision)
         recalls.append(avg_recall)
 
     return precision, recalls
 
+
+# DisplayT Top-N recommendationlist in a readble format
+def display_rec(recs):
+    i = 1
+    for rec in recs:
+        print('{}. Item ID: {} --- Predicted Rate: {}'.format(i, rec[0], round(rec[1], 1)))
+        i +=1
 
 # Return the number of items rated by given user
 # def get_Iu(uid, trainset):
